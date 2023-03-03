@@ -1,0 +1,27 @@
+build-ci-test:
+  stage: build
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$BUILD_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh -o StrictHostKeyChecking=no $BUILD_SSH_USER@$BUILD_SSH_IP -p $BUILD_SSH_PORT uptime
+  script:
+   - ssh $BUILD_SSH_USER@$BUILD_SSH_IP -p $BUILD_SSH_PORT 'cd /var/opt/iot-farm/service-auth && bash build.sh --branch=develop --port-public=3003 --port-container=3000'
+  only:
+    - develop
+
+deploy-ci-test:
+  stage: deploy
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$BUILD_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh -o StrictHostKeyChecking=no $BUILD_SSH_USER@$BUILD_SSH_IP -p $BUILD_SSH_PORT uptime
+  script:
+    - ssh $BUILD_SSH_USER@$BUILD_SSH_IP -p $BUILD_SSH_PORT 'cd /var/opt/iot-farm/service-auth && bash deploy.sh --branch=develop --port-public=3003 --port-container=3000'
+  only:
+    - develop
