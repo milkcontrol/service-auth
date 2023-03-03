@@ -8,7 +8,7 @@ build-ci-test:
     - chmod 700 ~/.ssh
     - ssh -o StrictHostKeyChecking=no $BUILD_SSH_USER@$BUILD_SSH_IP -p $BUILD_SSH_PORT uptime
   script:
-   - ssh $BUILD_SSH_USER@$BUILD_SSH_IP -p $BUILD_SSH_PORT 'cd /var/opt/iot-farm/service-auth && bash build.sh --branch=develop --port-public=3003 --port-container=3000'
+   - ssh $BUILD_SSH_USER@$BUILD_SSH_IP -p $BUILD_SSH_PORT 'cd /var/opt/iot-farm/service-auth && bash build.sh --branch=develop --port-public=3004 --port-container=3000'
   only:
     - develop
 
@@ -22,6 +22,6 @@ deploy-ci-test:
     - chmod 700 ~/.ssh
     - ssh -o StrictHostKeyChecking=no $BUILD_SSH_USER@$BUILD_SSH_IP -p $BUILD_SSH_PORT uptime
   script:
-    - ssh $BUILD_SSH_USER@$BUILD_SSH_IP -p $BUILD_SSH_PORT 'cd /var/opt/iot-farm/service-auth && bash deploy.sh --branch=develop --port-public=3003 --port-container=3000'
+    - ssh $BUILD_SSH_USER@$BUILD_SSH_IP -p $BUILD_SSH_PORT 'cd /var/opt/iot-farm/service-auth && bash deploy.sh --branch=develop --port-public=3004 --port-container=3000'
   only:
     - develop
