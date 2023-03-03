@@ -25,9 +25,9 @@ const main = async () => {
 
     routes(server)
     
-    server.listen(port || 3002, (err) => {
+    server.listen(port || 3000, (err) => {
         if (err) throw err
-        console.log(`Example app listening on port ${port || 3002}`)
+        console.log(`Example app listening on port ${port || 3000}`)
     })
 }
 
