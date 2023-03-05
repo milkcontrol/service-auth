@@ -50,11 +50,14 @@ const login = async (req, res, next) => {
                 }]
             })
         }
-        const accessToken = generateToken({
+        let dataToken = {
             sub: userExist.uid,
             username: userExist.username,
-            role: userExist.role
-        });
+            role: userExist.role,
+            type: userExist.type
+        }
+        if(userExist.subType || userExist.subType == 0) dataToken.subType = userExist.subType
+        const accessToken = generateToken(dataToken);
 
         userExist.accessToken = accessToken
         const uid = uuidv4();
@@ -71,15 +74,16 @@ const login = async (req, res, next) => {
             httpOnly: true,
             // secure: true,
             sameSite: "none",
-            
         });
         
         const dataUser = {
             token:accessToken,
             refreshToken: refreshToken,
             userId: userExist.uid,
-            username: userExist.username
+            username: userExist.username,
+            type: userExist.type
         }
+        if(userExist.subType || userExist.subType == 0) dataUser.subType = userExist.subType
         res.send(dataUser)
     } catch (err) {
         return res.status(401).send(err)

@@ -9,7 +9,8 @@ const User = require('../models/user')
 
 const userCreate = async (req, res, next) => {
     try {
-        const {username, password} = req.body;        
+        const {username, password, type, subType} = req.body;    
+        console.log('LLLOOOO', req.body)    
         // if(
         //     req.jwtDecode?.role &&
         //     req.jwtDecode?.role !== 1 
@@ -37,12 +38,19 @@ const userCreate = async (req, res, next) => {
         if (checkPass) return res.status(422).send(checkPass);
         const hasPass = await hasPassword(password);
         const uid = uuidv4();
-        const data = await User.query().insert({
-            uid: uid,
+        let dataUser = {
+            uid,
             username: username,
             password: hasPass,
             role: 2,
-        })
+            type
+        }
+        if(subType || subType == 0) {
+            console.log('////')
+            dataUser.subType = subType
+        }
+        console.log('lllo',dataUser)
+        const data = await User.query().insert(dataUser)
         return res.send(data)
     } catch (err) {
         return res.status(400).send(err)

@@ -25,6 +25,8 @@ class User extends Model {
                 username: {type: 'string', maxLength: 255},
                 password: {type: 'string', maxLength: 255},
                 role:{type: 'number'},
+                type:{type: 'number'},
+                subType:{type: 'number'},
                 createdAt: {type: 'number'},
                 updatedAt: {type: 'number'}
             }
