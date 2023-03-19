@@ -3,7 +3,7 @@ const jws = require("jws");
 const crypto = require("crypto");
 const moment = require('moment');
 require('dotenv').config();
-const redisClient = require('../lib/redisCLient');
+const redisClient = require('../lib/redisClient');
 
 
 const saltRounds = process.env.HASH_SALT || 12;

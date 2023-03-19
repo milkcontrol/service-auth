@@ -9,7 +9,7 @@ const {
 const User = require('../models/user')
 
 const Token = require('../models/token');
-const redisClient = require('../lib/redisCLient');
+const redisClient = require('../lib/redisClient');
 const durationToken = Number(process.env.REFRESH_DURATION || 8760);
 const login = async (req, res, next) => {
     try {
