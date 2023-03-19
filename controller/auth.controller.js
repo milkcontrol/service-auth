@@ -8,7 +8,8 @@ const {
 
 const User = require('../models/user')
 
-const Token = require('../models/token')
+const Token = require('../models/token');
+const redisClient = require('../lib/redisCLient');
 const durationToken = Number(process.env.REFRESH_DURATION || 8760);
 const login = async (req, res, next) => {
     try {
@@ -57,8 +58,8 @@ const login = async (req, res, next) => {
             type: userExist.type
         }
         if(userExist.subType || userExist.subType == 0) dataToken.subType = userExist.subType
-        const accessToken = generateToken(dataToken);
-
+        const accessToken = await generateToken(dataToken);
+        console.log("{}{}{}{}", accessToken)
         userExist.accessToken = accessToken
         const uid = uuidv4();
         await Token.query().insert({
@@ -75,9 +76,9 @@ const login = async (req, res, next) => {
             // secure: true,
             sameSite: "none",
         });
-        
+       
         const dataUser = {
-            token:accessToken,
+            token: accessToken,
             refreshToken: refreshToken,
             userId: userExist.uid,
             username: userExist.username,

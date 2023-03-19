@@ -3,6 +3,7 @@ const jws = require("jws");
 const crypto = require("crypto");
 const moment = require('moment');
 require('dotenv').config();
+const redisClient = require('../lib/redisCLient');
 
 
 const saltRounds = process.env.HASH_SALT || 12;
@@ -64,17 +65,41 @@ const comparePassword = (password, hash) => new Promise((resolve, reject) => {
     });
 })
 
-const generateToken = (sub) => {
+const generateToken = async(sub) => {
     try {
         const iat = Math.floor(Date.now() / 1000);
         const duration = parseInt(process.env.JWT_DURATION || '1800');
         const exp = iat + duration;
-        const accessToken = jws.sign({
+        console.log("+++++", exp)
+
+        const payload = {
             header: {alg: 'HS256', type: 'JWT'},
             payload: {...sub, iat, exp},
             privateKey: process.env.JWT_SECRET,
-        });
-        const data = jws.decode(accessToken)
+        }
+        const accessToken = jws.sign(payload);
+        console.log("PPPPPPP1111", accessToken)
+        console.log("PPPPPPP2222", typeof accessToken)
+        await redisClient.set(
+            accessToken,
+            JSON.stringify(payload),
+            'EX',
+            exp,
+            (err, reply) => {
+              if (err) {
+                console.log("error: ", err);
+              } else {
+                console.log("Record created");
+              }
+            }
+          );
+          console.log("accessss", accessToken)
+          const getData = await redisClient.get(accessToken)
+          console.log(">>>>>>", getData)
+          console.log(">>>>>>11111", typeof getData)
+
+        //   console.log(">>>>>>", await redisClient.get(accessToken))
+        // const data = jws.decode(accessToken)
         return {accessToken, expiration: moment(exp * 1000).format()};
     }catch (err){
         console.log(err)
