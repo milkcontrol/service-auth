@@ -20,6 +20,8 @@ const IV_LENGTH = 16;
 const KEY = crypto.createHash('sha256').update(String(SECRET)).digest('base64');
 
 const Token = require('../models/token')
+const fs = require('fs')
+const privateKey = fs.readFileSync('private_key.pem');
 
 
 const validationMail = (mail) => {
@@ -73,30 +75,30 @@ const generateToken = async(sub) => {
         console.log("+++++", exp)
 
         const payload = {
-            header: {alg: 'HS256', type: 'JWT'},
+            header: {alg: 'RS256', type: 'JWT'},
             payload: {...sub, iat, exp},
-            privateKey: process.env.JWT_SECRET,
+            privateKey: privateKey,
         }
         const accessToken = jws.sign(payload);
         console.log("PPPPPPP1111", accessToken)
         console.log("PPPPPPP2222", typeof accessToken)
-        await redisClient.set(
-            accessToken,
-            JSON.stringify(payload),
-            'EX',
-            exp,
-            (err, reply) => {
-              if (err) {
-                console.log("error: ", err);
-              } else {
-                console.log("Record created");
-              }
-            }
-          );
-          console.log("accessss", accessToken)
-          const getData = await redisClient.get(accessToken)
-          console.log(">>>>>>", getData)
-          console.log(">>>>>>11111", typeof getData)
+        // await redisClient.set(
+        //     accessToken,
+        //     JSON.stringify(payload),
+        //     'EX',
+        //     exp,
+        //     (err, reply) => {
+        //       if (err) {
+        //         console.log("error: ", err);
+        //       } else {
+        //         console.log("Record created");
+        //       }
+        //     }
+        //   );
+        //   console.log("accessss", accessToken)
+        //   const getData = await redisClient.get(accessToken)
+        //   console.log(">>>>>>", getData)
+        //   console.log(">>>>>>11111", typeof getData)
 
         //   console.log(">>>>>>", await redisClient.get(accessToken))
         // const data = jws.decode(accessToken)
