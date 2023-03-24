@@ -53,7 +53,6 @@ const login = async (req, res, next) => {
         }
         let dataToken = {
             sub: userExist.uid,
-            username: userExist.username,
             role: userExist.role,
             type: userExist.type
         }
