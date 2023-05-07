@@ -1,38 +1,40 @@
 version: "3.8"
 
 services:
-  db:
-    container_name: mysql-home-page
-    image: mysql:5.7
-    restart: always
-    # platform: linux/x86_64 # for mac m1
-    env_file:
-      - .env
-    environment:
-      - MYSQL_ROOT_PASSWORD=wF4rf2xOBHFlH7o
-      - MYSQL_DATABASE=${DB_DATABASE}
-      - MYSQL_USER=${DB_USERNAME}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
-    command: mysqld --sql_mode="" --character-set-server=utf8 --collation-server=utf8_unicode_ci --init-connect='SET NAMES UTF8;' --innodb-flush-log-at-trx-commit=0 && --init-file /data/application/init.sql
-    volumes:
-      - ./mysql:/var/lib/mysql
-      - ./bin/init.sql:/data/application/init.sql
-    ports:
-      - "33063:3306"
-
-    networks:
-      - network1
-  # app:
-  #   image: socket-iot
-  #   build: .
-  #   restart: unless-stopped
+  # db:
+  #   container_name: mysql-service-auth
+  #   image: mysql:5.7
+  #   restart: always
+  #   # platform: linux/x86_64 # for mac m1
   #   env_file:
   #     - .env
-  #   # platform: linux/x86_64
-  #   ports:
-  #     - "3000:3000"
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=wF4rf2xOBHFlH7o
+  #     - MYSQL_DATABASE=${DB_DATABASE}
+  #     - MYSQL_USER=${DB_USERNAME}
+  #     - MYSQL_PASSWORD=${DB_PASSWORD}
+  #   command: mysqld --sql_mode="" && --init-file /data/application/init.sql
   #   volumes:
-  #     - ./:/app
+  #     - ./mysql:/var/lib/mysql
+  #     - ./bin/init.sql:/data/application/init.sql
+  #   ports:
+  #     - "33064:3306"
+  #   networks:
+  #     - network1
+
+  app:
+    container_name: service-auth-develop
+    image: socket-auth
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    # platform: linux/x86_64
+    ports:
+      - "3004:3000"
+    volumes:
+      - ./:/app
+
   # redis:
   #   image: redis
   #   restart: always
@@ -45,7 +47,11 @@ services:
   #     - network1
   #   command:
   #     - --loglevel warning
+
 networks:
   network1:
-    name: service-auth
+    name: cs-iot
     external: true
+
+
+    
