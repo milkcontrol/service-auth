@@ -65,3 +65,6 @@ typings/
 mongo-data
 
 *.pem
+
+# db
+mysql
